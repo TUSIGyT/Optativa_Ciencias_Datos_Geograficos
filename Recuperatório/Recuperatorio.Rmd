@@ -1,0 +1,78 @@
+---
+title: "Ciencia de datos geográficos<br><br>"
+author: "Silvia Laceiras <br> Felipe Sodré M. Barros <br>  <br> Fabián Rechberger"
+output:
+  xaringan::moon_reader:
+    css: [metropolis]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: clear, inverse, middle, center
+
+# Recuperatorio
+
+---
+
+class: clear, inverse, middle, center
+
+# Rio de Janeiro pasa por una situación complicada de violencia
+
+---
+
+class: clear, inverse, middle, center
+
+# El ministro de seguridad recompiló todos los datos de ocurrencia de tiroteos del año 2020 en la ciudad de Rio de Janeiro
+
+---
+
+class: clear, inverse, middle, center
+
+# Al no tener equipo calificado para analizar dichos datos, ustedes fueron contratados para analizarlos y traer conocimiento al respecto de la situación;
+
+---
+
+class: clear, inverse, middle, center
+
+# Consigna: Ocupen R y el Markdown para elaborar un informe corto con los análisis que les parezca importante
+
+---
+# Consigna 
+
+Criterios de evaluación: 
+ * Creatividad en las preguntas; 
+ * Calidad de la presentación de los datos; 
+ * Calidad en los análisis;
+
+---
+
+class: clear, inverse, middle, center
+
+# Al respecto del dato
+
+---
+# Al respecto del dato
+
+El dato se encuentra en el aula virtual y se llama `"Tiroteos_Rio.csv"`.
+
+El mismo posee las siguientes columnas:
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE}
+library(sf)
+library(tidyverse)
+datos <- read_csv("Datos/Tiroteos_Rio.csv")
+colnames(datos)
+```
+
+---
+# Al respecto del dato
+
+Ahora vemos un poco los datos que tenemos:
+
+```{r}
+glimpse(datos)
+```
+

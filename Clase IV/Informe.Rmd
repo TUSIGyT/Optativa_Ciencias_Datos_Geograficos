@@ -1,0 +1,46 @@
+---
+title: "Informe Inmobiliario"
+author: "Felipe Sodré Mendes Barros"
+date: "`r Sys.Date()`"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Informe Inmobiliario
+
+Este informe fue creado en la clase de Introducción a la Ciencia de Datos Geograficos.
+
+## Organización y limpieza de datos
+
+```{r}
+library(sf)
+library(tmap)
+library(tidyverse)
+library(dbscan)
+
+datos <- read_csv("./Datos/AirbnbRJRentals_modificado.csv")
+
+airbnb <- st_as_sf(
+  datos, 
+  coords = c("longitude", "latitude"),
+  crs=4326)
+
+airbnb <- st_transform(airbnb, 32723)
+
+copacabana <- airbnb %>% filter(
+  neighbourhood %in% c("Copacabana", "Leme"),
+  room_type == "Entire home/apt")
+```
+
+```{r, warning=FALSE, message=FALSE}
+
+tm_shape(copacabana) + 
+  tm_dots()
+
+```
