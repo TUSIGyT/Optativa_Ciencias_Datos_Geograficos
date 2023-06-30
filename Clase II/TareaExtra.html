@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Ciencia de datos geográficos  </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Silvia Laceiras   Felipe Sodré M. Barros     Fabián Rechberger" />
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Ciencia de datos geográficos<br><br>
+]
+.author[
+### Silvia Laceiras <br> Felipe Sodré M. Barros <br> <br> Fabián Rechberger
+]
+
+---
+
+
+class: inverse, middle, center
+
+# Actividades extra: trabajando con *tmap*
+
+---
+# Trabajando con *tmap*
+
+Hola hemos creado algunos desafíos para que pongan en práctica lo que vimos en la clase del jueves, 04/05.
+
+En las siguientes filminas vamos a proponer algunas consignas y será presentada su resolución.
+
+La idea es ir aumentando la dificultad a cada ejercício y vamos agregando algunos elementos que no fueron trabajados en clase, para que ustedes ejerciten su autonomía.
+
+No se olviden de **acceder a la ayuda** de las funciones o **buscar en el Google**...
+
+---
+
+class: inverse, middle, center
+
+# 1. Crear un nuevo proyecto en el RStudio;
+
+---
+
+class: inverse, middle, center
+
+# 2. Descargar [estos datos](https://drive.google.com/drive/folders/1XHvcj6W-h4mjoKfKGMGZkLXsx3F3pgQM?usp=sharing) y poner en la carpeta del proyecto;
+
+https://drive.google.com/drive/folders/1XHvcj6W-h4mjoKfKGMGZkLXsx3F3pgQM?usp=sharing]rs/1XHvcj6W-h4mjoKfKGMGZkLXsx3F3pgQM?usp=sharing
+---
+
+class: inverse, middle, center
+
+# 3. Crear un nuevo script
+
+---
+
+# Consigna 1: 
+
+Con el paquete `geoAr` descargar los departamentos de Misiones y presentarlo graficamente usando el `tmap`.
+
+**Atención**: No dejen de cargar los paquetes necesarios :)
+
+---
+
+# Consigna 1
+
+
+```r
+library(geoAr)
+library(tmap)
+```
+
+```
+## The legacy packages maptools, rgdal, and rgeos, underpinning this package
+## will retire shortly. Please refer to R-spatial evolution reports on
+## https://r-spatial.org/r/2023/05/15/evolution4.html for details.
+## This package is now running under evolution status 0
+```
+
+```r
+departamentos &lt;- get_geo(geo='MISIONES', level='departamento')
+tm_shape(departamentos) + 
+  tm_polygons()
+```
+
+![](TareaExtra_files/figure-html/unnamed-chunk-1-1.png)&lt;!-- --&gt;
+
+---
+
+# Consigna 2: 
+- 2.1 cargue el paquete `sf`;
+- 2.2 cargue el dato vectorial `Escuelas_OSM.shp` a un objeto llamado `escuelas`;
+- 2.3 represente graficamente usando el `tmap`
+
+**Atención**: 
+Ustedes tendrán que indicar el camino a la carpeta que descargaron al princípio de esta actividad;
+
+**Atención II**: 
+El dato de escuelas tiene geometría de puntos (**dots**, en inglés) y no polígonos.
+---
+
+# Consigna 2
+
+
+```r
+library(sf)
+```
+
+```
+## Linking to GEOS 3.10.2, GDAL 3.4.1, PROJ 8.2.1; sf_use_s2() is TRUE
+```
+
+```r
+escuelas &lt;- read_sf("./datos_extra/vectoriales/Escuelas_OSM.shp")
+
+tm_shape(escuelas)+
+  tm_dots()
+```
+
+![](TareaExtra_files/figure-html/unnamed-chunk-2-1.png)&lt;!-- --&gt;
+
+---
+
+# Consigna 3: 
+
+Armar un mapa (lo más completo posible) con los polígonos de departamentos de Misiones y los datos de escuelas;
+
+**Atención**: 
+El `tmap` trabajo con el concepto de capas... el primer dato ingresado será el que quedará por debajo del segundo dato ingresado;
+
+**Atención II**: 
+Cada dato del `tmap` debe tener su configuración simbolización acorde a su geometría;
+
+---
+
+# Consigna 3
+
+
+```r
+tm_shape(departamentos)+
+  tm_polygons() +
+  tm_shape(escuelas)+
+  tm_dots()
+```
+
+![](TareaExtra_files/figure-html/unnamed-chunk-3-1.png)&lt;!-- --&gt;
+
+---
+
+# Consigna 4: 
+Modificar el mapa anterior, de forma tal que las escuelas permanezcan a corde al campo `operator_1`.
+
+---
+
+# Consigna 4
+Por color:
+
+```r
+tm_shape(departamentos)+
+  tm_polygons() +
+  tm_shape(escuelas)+
+  tm_dots(col = "operator_1")
+```
+
+![](TareaExtra_files/figure-html/unnamed-chunk-4-1.png)&lt;!-- --&gt;
+
+---
+
+# Consigna 5:
+- Busquen mejorar el color de la representación de los puntos;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "rainbow",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

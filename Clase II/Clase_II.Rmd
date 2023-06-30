@@ -1,0 +1,496 @@
+---
+title: "Ciencia de datos geograficos<br><br>"
+author: "Silvia Laceiras <br> Felipe Sodré M. Barros <br>  <br> Fabián Rechberger"
+output:
+  xaringan::moon_reader:
+    css: [metropolis]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE, encoding = "UTF-8")
+library(sf)
+```
+
+# Ciencia de datos: Por donde empezaR?
+
+## Tópicos
+### 0. Instalando R y RStudio
+### 1. Organizando carpeta del proyecto
+### 2. Por qué R?
+### 3. R y RStudio
+### 4. Paquetes/Librerías
+### ...
+### X. Materiales de consulta
+
+---
+
+class: inverse, middle, center
+
+# 0. Instalando R y RStudio
+
+---
+
+class: inverse, middle, center
+
+# 1. Organizando carpeta del proyecto
+
+---
+
+class: inverse, middle, center
+
+# 2. Por qué R?
+
+---
+# 2. Por qué R?
+
+### 1. Es **grátis**!
+
+--
+
+### 2. Es amigable (**"user-friendly"**)!
+
+--
+
+### 3. Permite automatizar rutinas (tareas que se repiten)!
+
+--
+
+### 4. Nos permite hacer **graficos** de forma eficiente
+
+--
+
+### 5. Es considerada una de las **principales linguajes** para nálsisi de datos
+
+<br>
+
+[*] https://insights.stackoverflow.com/survey/2019#technology
+
+---
+
+# 2. Por qué R?
+
+<br>
+
+**~~Qué puedo hacer con R?~~**
+
+<br><br>
+
+--
+
+
+## **Cómo hacer `XXXX` en R?**
+
+---
+class: inverse, middle, center
+
+# 3. R y RStudio
+
+---
+
+background-image: url(img/general_hard_soft.png)
+background-size: 800px
+background-position: 50% 50%
+
+# Aclaración importante
+
+---
+
+background-image: url(img/r_vs_rstudio2.png),url(img/r_logo.svg),url(img/rstudio_logo.svg)
+background-size: 600px,150px,250px
+background-position: 50% 80%,28% 30%,73% 35%
+
+# 3. R y RStudio
+
+---
+
+class: clear, inverse, middle, center
+
+# 3. Entendiendo el RStudio
+
+---
+
+background-image: url(img/rstudio_console.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 3. R y RStudio
+
+## Ambiente de desarrollo integrado (IDE)
+
+---
+
+background-image: url(img/rstudio_console_working.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 3. R y RStudio
+
+---
+
+
+background-image: url(img/rstudio_working.png)
+background-size: 750px
+background-position: 50% 70%
+
+# 3. R y RStudio
+
+---
+class: clear, inverse, middle, center
+
+# 4. Paquetes/Librerías
+
+---
+
+background-image: url(img/package_r.png)
+background-size: 300px
+background-position: 50% 80%
+
+# 4. Paquetes/Librerías
+
+## Paquetes/Librerías son **colecciones de funciones** creadas para realizar análisis específicos o manejar distintos tipos de datos.
+
+---
+background-image: url(https://github.com/PoliticaArgentina/data_warehouse/raw/master/hex/collage.png)
+background-size: 1000px
+background-position: 50% 50%
+
+# 4. Paquetes/Librerías
+
+---
+
+background-image: url(img/geoar.png)
+background-size: 250px
+background-position: 80% 90%
+
+# Instalando nuestro primero paquete
+
+## Instalando el paquete `geoAr`
+
+```{r,eval=FALSE}
+install.packages("geoAr")
+```
+
+## Cargando el paquete
+
+```{r}
+library(geoAr)
+library(sf) # vamos a ocupar el paquete sf tambien
+```
+
+<br><br><br><br><br>
+
+[*] https://github.com/PoliticaArgentina/geoAr
+
+---
+
+# Instalando nuestro primero paquete
+
+## Descargando datos geográficos de Argentina directo del R
+
+```{r,message=FALSE,warning=FALSE}
+# descarga de datos
+departamentos <- get_geo(geo="MISIONES", level = "departamento")
+departamentos
+```
+
+---
+
+background-image: url(https://r-spatial.github.io/sf/articles/sf_xfig.png)
+background-size: 700px
+background-position: 50% 50%
+
+# La estructura del dato geográfico
+---
+
+# Instalando nuestro primero paquete
+
+## creando un grafico (mapa?) simple
+```{r,fig.align='center'}
+# mapa de los departamentos
+plot(departamentos)
+```
+
+---
+# Entendiendo la representación [geo]gráfica
+
+Como se trata de un dato con geometría que posee atributos asociados, el R representa graficamente las geometrías con todos los atributos existentes, generando `x` 'mapas'. 
+
+**Por eso, mucho cuidado al usar datos geográficos con muchas columnas en la tabla de atributos!**
+
+creando un grafico (mapa?) sin representar los atributos:
+
+```{r,fig.align='center'}
+plot(st_geometry(departamentos))
+```
+
+---
+
+class: inverse, middle, center
+
+# Elaborando mapas
+
+---
+
+background-image: url(img/tmap_noLogo.png)
+background-size: 350px
+background-position: 10% 85%
+
+# Elaborando mapas
+
+---
+
+background-image: url(img/tmap_noLogo.png), url(img/tmap_paper.png)
+background-size: 350px, 450px
+background-position: 10% 85%, 90% 75% 
+
+# Elaborando mapas
+[`https://www.jstatsoft.org/article/view/v084i06`](https://www.jstatsoft.org/article/view/v084i06)
+
+---
+
+class: inverse, middle, center
+# Instalando el tmap
+
+---
+# Instalando el tmap
+El clásico:
+```{r, eval=FALSE}
+install.packages("tmap")
+```
+
+---
+
+class: inverse, middle, center
+
+# Usando el tmap (sintaxis)
+
+---
+
+# Usando el tmap (sintaxis)
+
+El **`tmap`**, bien como el  **`ggplot2`** (principal librería para gráficos en R), está basado en el abordaje "gramatica de gráficos" (‘grammar of graphics’, Wilkinson and Wills 2005).
+
+Qué quiere decir eso?
+
+* Esta basado en capas (`layers`)
+--
+
+* Separa el dato de entrada de las configuraciones estéticas (definición del cómo el mismo será presentado);
+
+--
+
+* El elemento básico es la función `tm_shape()`, en el cual se especifica el dato de entrada;
+--
+
+* El `tm_shape` debe ser seguido por un elemento que define la estetica, como `tm_polygons()` (para representar polígonos) y/o `tm_dots()` (para datos de punto), entre [**tantos**] otros; 
+
+```{r, eval=FALSE}
+# representando el dato de departamentos con tmap
+tm_shape(departamentos) +
+  tm_polygons()
+```
+
+---
+
+# Usando el tmap (sintaxis)
+
+**Atención!** No confundir el término `shape` de la función del `tmap` con **shapefile**. `tm_shape` será usado mismo si el dato de entrada fuera un **raster**!
+
+```{r,,eval=FALSE}
+tm_shape(raster_entrada) + 
+  tm_raster()
+```
+
+---
+
+class: inverse, middle, center
+
+# Manos a la obra
+---
+
+# Población de Misiones
+
+Vamos a trabajar con los datos de población del censo.
+
+**Cargando el dato de censo**
+
+```{r}
+library(sf)
+library(tmap)
+(poblacion <- st_read("./datos/vectoriales/Misiones_con_datos.shp"))
+```
+---
+
+# Población de Misiones
+
+Inspecionando la representación geográfica de los atributos
+
+```{r}
+plot(poblacion)
+```
+---
+# Elaborando un mapa con `tmap` de la Población de Misiones 
+
+En este mapa queremos representar solamente la geometría con los colores representando los valores presentes en el campo `totalpobl`:
+
+```{r}
+tm_shape(poblacion) + 
+  tm_polygons(col = 'totalpobl')
+```
+---
+# Elaborando un mapa con `tmap` de la Población de Misiones 
+
+Como los radios censal suelen tener tamaños variados y muchos de ellos, chiquitos, la línea de perímetro del polígono suele dificultar la visualización/interpretación...
+
+Por eso, podríamos cambiar los parámetros de `tm_polygons`:
+
+```{r}
+tm_shape(poblacion) + 
+  tm_polygons(col = 'totalpobl', border.col = NULL)
+```
+---
+# tmap
+
+Pero nos faltan los elementos básicos del mapa:
+1. Flecha de norte;
+1. Coordenadas de referencia del mapa (grilla);
+1. Barra de escala;
+---
+# Flecha de norte
+
+```{r}
+tm_shape(poblacion) + 
+  tm_polygons(col = 'totalpobl', border.col = NULL) +
+  tm_compass()
+```
+---
+# Coordenadas de referencia del mapa (grilla)
+```{r}
+tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()
+```
+
+---
+# Barra de escala
+```{r}
+tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()+ 
+  tm_scale_bar()
+```
+---
+# Titulo
+```{r}
+tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()+ 
+  tm_scale_bar() +
+  tm_layout(main.title = "Población total en Misiones por radio censal ", legend.outside = T, main.title.position = 'center')
+```
+---
+# Guardando el mapa como objeto R
+
+Podemos crear un objeto que almacena el mapa e con eso facilitar la configuración del mismo.
+
+```{r}
+mapa <- tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()+ 
+  tm_scale_bar() +
+  tm_layout(main.title = "Población total en Misiones por radio censal ", legend.outside = T, main.title.position = 'center')
+mapa
+```
+---
+# Usando estilo pre definidos
+
+### tmap_style
+* tm_style("bw")
+* tm_style("classic")
+* tm_style("cobalt")
+* tm_style("col_blind")
+* tm_style("natural")
+
+```{r}
+mapa + tm_style("bw")
+```
+---
+# Guardando el mapa
+
+```{r, eval=FALSE}
+tmap::tmap_save(mapa, filename = "mapa_poblacion_misiones.png")
+```
+
+---
+# tmap_mode()
+Otra funcionalidad intereante del tmap es permitir visualizar el mapa en formato webmap. Para eso, basta alterar el parãmetro del `tmap_mode()`, para `view`.
+
+```{r, eval=FALSE}
+tmap_mode("view")
+mapa
+```
+---
+# Guardando en un html
+El `tmap` permite también guardar el mapa en formato webmap. Basta usar `tmap_save` y guardalo como `.html`:
+
+```{r, eval=FALSE}
+tmap::tmap_save(filename = "mapa_población_misiones.html")
+
+```
+
+---
+
+class: inverse, middle, center
+
+# Materiales para estudio
+
+---
+
+background-image: url(img/cover_analise_espacial_r.png)
+background-size: 300px
+background-position: 50% 55%
+
+# Materiales para estudio
+
+## Análise espacial com R (2019)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+[*] https://www.dropbox.com/s/blgtp2bmpdghol7/AnaliseEspacialComR.pdf
+
+---
+
+background-image: url(img/cover_geocompr.png)
+background-size: 280px
+background-position: 50% 50%
+
+# Materiales para estudio
+
+## Geocomputation with R (2019)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+[*] https://geocompr.robinlovelace.net/
+
+---
+
+background-image: url(img/cover_geospatial_health_data.jpg)
+background-size: 280px
+background-position: 50% 55%
+
+# Materiales para estudio
+
+## Geospatial Health Data (2019)
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+[*] http://www.paulamoraga.com/book-geospatial/

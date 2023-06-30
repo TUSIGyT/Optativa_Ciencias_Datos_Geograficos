@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Ciencia de datos geograficos  </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Silvia Laceiras   Felipe Sodré M. Barros     Fabián Rechberger" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/metropolis.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Ciencia de datos geograficos<br><br>
+]
+.author[
+### Silvia Laceiras <br> Felipe Sodré M. Barros <br> <br> Fabián Rechberger
+]
+
+---
+
+
+
+
+# Ciencia de datos: Por donde empezaR?
+
+## Tópicos
+### 0. Instalando R y RStudio
+### 1. Organizando carpeta del proyecto
+### 2. Por qué R?
+### 3. R y RStudio
+### 4. Paquetes/Librerías
+### ...
+### X. Materiales de consulta
+
+---
+
+class: inverse, middle, center
+
+# 0. Instalando R y RStudio
+
+---
+
+class: inverse, middle, center
+
+# 1. Organizando carpeta del proyecto
+
+---
+
+class: inverse, middle, center
+
+# 2. Por qué R?
+
+---
+# 2. Por qué R?
+
+### 1. Es **grátis**!
+
+--
+
+### 2. Es amigable (**"user-friendly"**)!
+
+--
+
+### 3. Permite automatizar rutinas (tareas que se repiten)!
+
+--
+
+### 4. Nos permite hacer **graficos** de forma eficiente
+
+--
+
+### 5. Es considerada una de las **principales linguajes** para nálsisi de datos
+
+&lt;br&gt;
+
+[*] https://insights.stackoverflow.com/survey/2019#technology
+
+---
+
+# 2. Por qué R?
+
+&lt;br&gt;
+
+**~~Qué puedo hacer con R?~~**
+
+&lt;br&gt;&lt;br&gt;
+
+--
+
+
+## **Cómo hacer `XXXX` en R?**
+
+---
+class: inverse, middle, center
+
+# 3. R y RStudio
+
+---
+
+background-image: url(img/general_hard_soft.png)
+background-size: 800px
+background-position: 50% 50%
+
+# Aclaración importante
+
+---
+
+background-image: url(img/r_vs_rstudio2.png),url(img/r_logo.svg),url(img/rstudio_logo.svg)
+background-size: 600px,150px,250px
+background-position: 50% 80%,28% 30%,73% 35%
+
+# 3. R y RStudio
+
+---
+
+class: clear, inverse, middle, center
+
+# 3. Entendiendo el RStudio
+
+---
+
+background-image: url(img/rstudio_console.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 3. R y RStudio
+
+## Ambiente de desarrollo integrado (IDE)
+
+---
+
+background-image: url(img/rstudio_console_working.png)
+background-size: 800px
+background-position: 50% 70%
+
+# 3. R y RStudio
+
+---
+
+
+background-image: url(img/rstudio_working.png)
+background-size: 750px
+background-position: 50% 70%
+
+# 3. R y RStudio
+
+---
+class: clear, inverse, middle, center
+
+# 4. Paquetes/Librerías
+
+---
+
+background-image: url(img/package_r.png)
+background-size: 300px
+background-position: 50% 80%
+
+# 4. Paquetes/Librerías
+
+## Paquetes/Librerías son **colecciones de funciones** creadas para realizar análisis específicos o manejar distintos tipos de datos.
+
+---
+background-image: url(https://github.com/PoliticaArgentina/data_warehouse/raw/master/hex/collage.png)
+background-size: 1000px
+background-position: 50% 50%
+
+# 4. Paquetes/Librerías
+
+---
+
+background-image: url(img/geoar.png)
+background-size: 250px
+background-position: 80% 90%
+
+# Instalando nuestro primero paquete
+
+## Instalando el paquete `geoAr`
+
+
+```r
+install.packages("geoAr")
+```
+
+## Cargando el paquete
+
+
+```r
+library(geoAr)
+library(sf) # vamos a ocupar el paquete sf tambien
+```
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+[*] https://github.com/PoliticaArgentina/geoAr
+
+---
+
+# Instalando nuestro primero paquete
+
+## Descargando datos geográficos de Argentina directo del R
+
+
+```r
+# descarga de datos
+departamentos &lt;- get_geo(geo="MISIONES", level = "departamento")
+departamentos
+```
+
+```
+## Simple feature collection with 17 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -56.05506 ymin: -28.15997 xmax: -53.64276 ymax: -25.49841
+## Geodetic CRS:  WGS 84
+## # A tibble: 17 × 3
+##    codprov_censo coddepto_censo                                         geometry
+##  * &lt;chr&gt;         &lt;chr&gt;                                        &lt;MULTIPOLYGON [°]&gt;
+##  1 54            007            (((-55.49358 -27.70632, -55.5005 -27.76028, -55…
+##  2 54            014            (((-54.58086 -27.01227, -54.54501 -27.08789, -5…
+##  3 54            021            (((-55.56439 -27.29871, -55.53692 -27.29375, -5…
+##  4 54            028            (((-55.81289 -27.46097, -55.78509 -27.49415, -5…
+##  5 54            035            (((-55.31861 -27.91788, -55.33642 -27.93525, -5…
+##  6 54            042            (((-54.63971 -26.15249, -54.60398 -26.16399, -5…
+##  7 54            049            (((-54.14718 -26.12068, -54.20102 -26.10353, -5…
+##  8 54            056            (((-54.57373 -26.91641, -54.57416 -26.89513, -5…
+##  9 54            063            (((-54.32134 -26.14442, -54.42984 -26.12308, -5…
+## 10 54            070            (((-55.63046 -27.61444, -55.55996 -27.57324, -5…
+## 11 54            077            (((-54.66308 -26.96643, -54.70481 -26.98043, -5…
+## 12 54            084            (((-54.67313 -26.4629, -54.65833 -26.47774, -54…
+## 13 54            091            (((-54.91195 -27.38906, -54.92523 -27.4136, -54…
+## 14 54            098            (((-55.19887 -26.99029, -55.17847 -26.99996, -5…
+## 15 54            105            (((-55.07925 -27.61648, -55.03577 -27.65856, -5…
+## 16 54            112            (((-54.26996 -26.44564, -54.1775 -26.44586, -54…
+## 17 54            119            (((-54.37023 -27.22205, -54.3531 -27.23658, -54…
+```
+
+---
+
+background-image: url(https://r-spatial.github.io/sf/articles/sf_xfig.png)
+background-size: 700px
+background-position: 50% 50%
+
+# La estructura del dato geográfico
+---
+
+# Instalando nuestro primero paquete
+
+## creando un grafico (mapa?) simple
+
+```r
+# mapa de los departamentos
+plot(departamentos)
+```
+
+&lt;img src="Clase_II_files/figure-html/unnamed-chunk-4-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+# Entendiendo la representación [geo]gráfica
+
+Como se trata de un dato con geometría que posee atributos asociados, el R representa graficamente las geometrías con todos los atributos existentes, generando `x` 'mapas'. 
+
+**Por eso, mucho cuidado al usar datos geográficos con muchas columnas en la tabla de atributos!**
+
+creando un grafico (mapa?) sin representar los atributos:
+
+
+```r
+plot(st_geometry(departamentos))
+```
+
+&lt;img src="Clase_II_files/figure-html/unnamed-chunk-5-1.png" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: inverse, middle, center
+
+# Elaborando mapas
+
+---
+
+background-image: url(img/tmap_noLogo.png)
+background-size: 350px
+background-position: 10% 85%
+
+# Elaborando mapas
+
+---
+
+background-image: url(img/tmap_noLogo.png), url(img/tmap_paper.png)
+background-size: 350px, 450px
+background-position: 10% 85%, 90% 75% 
+
+# Elaborando mapas
+[`https://www.jstatsoft.org/article/view/v084i06`](https://www.jstatsoft.org/article/view/v084i06)
+
+---
+
+class: inverse, middle, center
+# Instalando el tmap
+
+---
+# Instalando el tmap
+El clásico:
+
+```r
+install.packages("tmap")
+```
+
+---
+
+class: inverse, middle, center
+
+# Usando el tmap (sintaxis)
+
+---
+
+# Usando el tmap (sintaxis)
+
+El **`tmap`**, bien como el  **`ggplot2`** (principal librería para gráficos en R), está basado en el abordaje "gramatica de gráficos" (‘grammar of graphics’, Wilkinson and Wills 2005).
+
+Qué quiere decir eso?
+
+* Esta basado en capas (`layers`)
+--
+
+* Separa el dato de entrada de las configuraciones estéticas (definición del cómo el mismo será presentado);
+
+--
+
+* El elemento básico es la función `tm_shape()`, en el cual se especifica el dato de entrada;
+--
+
+* El `tm_shape` debe ser seguido por un elemento que define la estetica, como `tm_polygons()` (para representar polígonos) y/o `tm_dots()` (para datos de punto), entre [**tantos**] otros; 
+
+
+```r
+# representando el dato de departamentos con tmap
+tm_shape(departamentos) +
+  tm_polygons()
+```
+
+---
+
+# Usando el tmap (sintaxis)
+
+**Atención!** No confundir el término `shape` de la función del `tmap` con **shapefile**. `tm_shape` será usado mismo si el dato de entrada fuera un **raster**!
+
+
+```r
+tm_shape(raster_entrada) + 
+  tm_raster()
+```
+
+---
+
+class: inverse, middle, center
+
+# Manos a la obra
+---
+
+# Población de Misiones
+
+Vamos a trabajar con los datos de población del censo.
+
+**Cargando el dato de censo**
+
+
+```r
+library(sf)
+library(tmap)
+```
+
+```
+## The legacy packages maptools, rgdal, and rgeos, underpinning this package
+## will retire shortly. Please refer to R-spatial evolution reports on
+## https://r-spatial.org/r/2023/05/15/evolution4.html for details.
+## This package is now running under evolution status 0
+```
+
+```r
+(poblacion &lt;- st_read("./datos/vectoriales/Misiones_con_datos.shp"))
+```
+
+```
+## Reading layer `Misiones_con_datos' from data source 
+##   `/mnt/Trabalho/repos/UNaM_GeoDataScience/Clase II/datos/vectoriales/Misiones_con_datos.shp' 
+##   using driver `ESRI Shapefile'
+## Simple feature collection with 1432 features and 8 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 4486130 ymin: 6841372 xmax: 4740998 ymax: 7126808
+## Projected CRS: POSGAR 94 / Argentina 3
+```
+
+```
+## Simple feature collection with 1432 features and 8 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 4486130 ymin: 6841372 xmax: 4740998 ymax: 7126808
+## Projected CRS: POSGAR 94 / Argentina 3
+## First 10 features:
+##    toponimo_i      link varon mujer totalpobl hogares viviendasp viv_part_h
+## 1      336254 541050302   486   439       925     265        303        258
+## 2      336228 540910710   526   248       774     144        165        144
+## 3      336217 540840602   252   220       472     109        114        107
+## 4      336216 540840405   466   419       885     217        231        203
+## 5      336214 540840402   198   194       392      87         94         85
+## 6      336210 540840104   404   376       780     192        205        184
+## 7      336208 540770603   264   255       519     165        196        162
+## 8      336203 540770306   167   129       296      72         82         71
+## 9      336202 540770305   233   214       447     107        108        103
+## 10     336194 540700602   361   375       736     209        240        207
+##                          geometry
+## 1  MULTIPOLYGON (((4571080 688...
+## 2  MULTIPOLYGON (((4580244 691...
+## 3  MULTIPOLYGON (((4619103 700...
+## 4  MULTIPOLYGON (((4631570 700...
+## 5  MULTIPOLYGON (((4639612 701...
+## 6  MULTIPOLYGON (((4632644 702...
+## 7  MULTIPOLYGON (((4596677 697...
+## 8  MULTIPOLYGON (((4623294 699...
+## 9  MULTIPOLYGON (((4620207 698...
+## 10 MULTIPOLYGON (((4539174 691...
+```
+---
+
+# Población de Misiones
+
+Inspecionando la representación geográfica de los atributos
+
+
+```r
+plot(poblacion)
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+---
+# Elaborando un mapa con `tmap` de la Población de Misiones 
+
+En este mapa queremos representar solamente la geometría con los colores representando los valores presentes en el campo `totalpobl`:
+
+
+```r
+tm_shape(poblacion) + 
+  tm_polygons(col = 'totalpobl')
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+---
+# Elaborando un mapa con `tmap` de la Población de Misiones 
+
+Como los radios censal suelen tener tamaños variados y muchos de ellos, chiquitos, la línea de perímetro del polígono suele dificultar la visualización/interpretación...
+
+Por eso, podríamos cambiar los parámetros de `tm_polygons`:
+
+
+```r
+tm_shape(poblacion) + 
+  tm_polygons(col = 'totalpobl', border.col = NULL)
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+---
+# tmap
+
+Pero nos faltan los elementos básicos del mapa:
+1. Flecha de norte;
+1. Coordenadas de referencia del mapa (grilla);
+1. Barra de escala;
+---
+# Flecha de norte
+
+
+```r
+tm_shape(poblacion) + 
+  tm_polygons(col = 'totalpobl', border.col = NULL) +
+  tm_compass()
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+---
+# Coordenadas de referencia del mapa (grilla)
+
+```r
+tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+
+---
+# Barra de escala
+
+```r
+tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()+ 
+  tm_scale_bar()
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+---
+# Titulo
+
+```r
+tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()+ 
+  tm_scale_bar() +
+  tm_layout(main.title = "Población total en Misiones por radio censal ", legend.outside = T, main.title.position = 'center')
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
+---
+# Guardando el mapa como objeto R
+
+Podemos crear un objeto que almacena el mapa e con eso facilitar la configuración del mismo.
+
+
+```r
+mapa &lt;- tm_shape(poblacion) + 
+  tm_fill(col = 'totalpobl') +
+  tm_compass() +
+  tm_grid()+ 
+  tm_scale_bar() +
+  tm_layout(main.title = "Población total en Misiones por radio censal ", legend.outside = T, main.title.position = 'center')
+mapa
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-17-1.png)&lt;!-- --&gt;
+---
+# Usando estilo pre definidos
+
+### tmap_style
+* tm_style("bw")
+* tm_style("classic")
+* tm_style("cobalt")
+* tm_style("col_blind")
+* tm_style("natural")
+
+
+```r
+mapa + tm_style("bw")
+```
+
+```
+## Note that tm_style("bw") resets all options set with tm_layout, tm_view, tm_format, or tm_legend. It is therefore recommended to place the tm_style element prior to the other tm_layout/tm_view/tm_format/tm_legend elements.
+```
+
+![](Clase_II_files/figure-html/unnamed-chunk-18-1.png)&lt;!-- --&gt;
+---
+# Guardando el mapa
+
+
+```r
+tmap::tmap_save(mapa, filename = "mapa_poblacion_misiones.png")
+```
+
+---
+# tmap_mode()
+Otra funcionalidad intereante del tmap es permitir visualizar el mapa en formato webmap. Para eso, basta alterar el parãmetro del `tmap_mode()`, para `view`.
+
+
+```r
+tmap_mode("view")
+mapa
+```
+---
+# Guardando en un html
+El `tmap` permite también guardar el mapa en formato webmap. Basta usar `tmap_save` y guardalo como `.html`:
+
+
+```r
+tmap::tmap_save(filename = "mapa_población_misiones.html")
+```
+
+---
+
+class: inverse, middle, center
+
+# Materiales para estudio
+
+---
+
+background-image: url(img/cover_analise_espacial_r.png)
+background-size: 300px
+background-position: 50% 55%
+
+# Materiales para estudio
+
+## Análise espacial com R (2019)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+[*] https://www.dropbox.com/s/blgtp2bmpdghol7/AnaliseEspacialComR.pdf
+
+---
+
+background-image: url(img/cover_geocompr.png)
+background-size: 280px
+background-position: 50% 50%
+
+# Materiales para estudio
+
+## Geocomputation with R (2019)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+[*] https://geocompr.robinlovelace.net/
+
+---
+
+background-image: url(img/cover_geospatial_health_data.jpg)
+background-size: 280px
+background-position: 50% 55%
+
+# Materiales para estudio
+
+## Geospatial Health Data (2019)
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+[*] http://www.paulamoraga.com/book-geospatial/
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "rainbow",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
