@@ -1,0 +1,470 @@
+---
+title: "Ciencia de datos geograficos<br><br>"
+author: "Silvia Laceiras <br> Felipe Sodré M. Barros <br>  <br> Fabián Rechberger"
+output:
+  xaringan::moon_reader:
+    css: [metropolis]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: clear, inverse, middle, center
+
+# Vamos de viaje!
+
+---
+
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/Cidade_Maravilhosa.jpg/1200px-Cidade_Maravilhosa.jpg)
+background-size: 800px
+background-position: 50% 50%
+
+# Vamos de Viaje!
+---
+
+# pero...
+
+* Cuanto nos va a costar?
+* Donde nos vamos a quedar?
+* Qué tipo de alquiler podremos buscar?
+--
+
+background-image: url(https://www.digital.ink/wp-content/uploads/airbnb_logo_detail.jpg)
+background-size: 700px
+background-position: 50% 50%
+
+Vamos a analizar los datos de 
+
+---
+# instalando algunos paquetes necesarios
+Vamos a ocupar el paquete `geobr` para acceder al dato espacial del municipio de Rio de Janeiro.
+Y vamos a ocupar el paquete `tidyverse` para la limpieza de datos:
+
+```{r, eval=FALSE}
+install.packages("geobr")
+install.packages("tidyverse")
+install.packages("ggplot2")
+```
+
+---
+
+# Cargando los paquetes que vamos a ocupar
+
+```{r}
+library(sf)
+library(tmap)
+library(geobr)
+library(tidyverse)
+library(ggplot2)
+```
+
+---
+# Introducción
+
+Pero más allá de prepararnos para el viaje, vamos a aprender:
+* Cargar un dato `CSV`;
+* Algunas herramientas de limpieza de datos;
+* Creacción de gráficos (histograma y boxplot);
+
+---
+
+class: clear, inverse, middle, center
+
+# Qué es el proceso de limpieza de datos?
+
+---
+
+background-image: url("./img/general_real_data.jpg")
+background-size: 700px
+background-position: 50% 50%
+
+---
+
+class: clear, inverse, middle, center
+
+# Qué es un archivo CSV?
+
+---
+
+background-image: url(https://internetpasoapaso.com/wp-content/uploads/archivo-csv-en-windows.jpg)
+background-size: 700px
+background-position: 50% 50%
+
+---
+
+# Cargando los datos de Airbnb
+
+Vamos a cargar el dato `csv` con la función `read_csv`, del paquete `readr`, que nos brinda `tidyverse`.
+
+```{r}
+datos <- read_csv("./Datos/AirbnbRJRentals_modificado.csv")
+```
+
+---
+# Datos del Airbnb
+
+Lo interesante es que el dato de alquileres de Airbnb, brinda dos columns que nos puede ser interesante:
+
+--
+* `latitude`
+
+--
+
+* `longitude`
+
+---
+# convertiendo el dataframe en un dato geográfico
+
+Para convertir el `csv` en un dato geográfico tendremos que usar la función `st_as_sf`, informando cuales columnas teienen la información de coordenadas:
+
+```{r}
+# transformando en geografico
+(airbnb <- st_as_sf(datos, coords = c("longitude", "latitude") ))
+```
+
+---
+class: inverse, clean, middle, center
+
+# Una vez que ya tenemos los datos geográficos en formato *simple feature*, podríamos hacer un "mapita", no?
+---
+
+```{r}
+tm_shape(airbnb) +
+  tm_dots()
+```
+
+---
+
+# Descargando datos del municiipio de Rio de Janeiro
+
+Para eso vamos a ocupar la función `get_municipality` del paquete `geobr`.
+Y aprovechamos y hacemos un "mapita", no? 
+```{r}
+(rj <- read_municipality(code_mun='RJ'))
+```
+
+---
+# Limpieza de datos: filtrado
+Lo que desdcargamos son los municipios de la provincia de Rio. Pero queremos trabajar solamente con el município de Rio de Janeiro. Por eso, vamos a filtrar, de todos los municipios, aquellos que poseen el campo `name_muni` igual a 'Rio De Janeiro'
+
+Vamos a ocupar la función `filter`:
+
+```{r}
+rj <- filter(rj, name_muni == 'Rio De Janeiro')
+```
+
+**ATENCIÓN:** El símbolo `=` es de atribución. Lo que estamos haciendo es una consulta, por eso se ocupa el simbolo `==`;
+
+---
+
+class: inverse, center, middle, clear
+
+# A partir del mapa, ya se puede identificar un patrón en la distribución de los alquileres?
+
+---
+
+class: inverse, center, middle, clear
+
+# Empecemos el viaje: crear un mapa dinámico (webmap) con el municipio de Rio y los puntos de alquiler....
+
+---
+
+class: inverse, center, middle, clear
+
+# Análisis exploratorio
+---
+# Análisis exploratorio
+Una de las primeras cosas que se hace al acceder a algun conjunto de datos es entender qué columnas existen, que valores poseen, 
+
+---
+# análsis exploratorio
+
+Qué datos existen en la planilla (data frame)?
+
+```{r}
+colnames(airbnb)
+```
+---
+# Resumo estadístico
+
+```{r}
+summary(airbnb)
+```
+---
+# Qué información tenemos en *room_type*?
+
+```{r}
+unique(airbnb$room_type)
+```
+---
+
+class: inverse, clear, middle, center
+
+# graficos con *ggplot2*
+
+---
+# Introducción al *ggplot2*
+El `ggplot` tiene una estructura similar al `tmap`.
+
+El dato de entrada debe figurar en la función `ggplot()`:
+
+```{r, eval=FALSE}
+ggplot(airbnb)
+```
+
+---
+# Introducción al *ggplot2*
+
+Al dato de entrada se agregan las definiciones de visualización:
+
+* `aes() +`
+* `geom_() +`
+* `theme_()`
+
+```{r, eval=FALSE}
+ggplot(airbnb) + geom_histogram(aes(x=price))
+```
+
+---
+
+background-image: url(img/cover_grammar_graphics.jpg),url(img/ggplot2_structure.png)
+background-size: 160px,630px
+background-position: 7% 55%,85% 55%
+
+# Introducción al *ggplot2*
+
+## The Grammar of Graphics (1999)
+
+El paquete `ggplot2`, tal cual `tmap` está basado en el abordaje de gramática de los gráficos.
+<br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+Fonte: [texto en inglés](https://medium.com/tdebeus/think-about-the-grammar-of-graphics-when-improving-your-graphs-18e3744d8d18)
+
+---
+
+background-image: url(img/plot_ggplot.gif)
+background-size: 750px
+background-position: 50% 45%
+
+# Introducción al *ggplot2*
+
+## **ggplot2**
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+Fonte: https://medium.com/tdebeus/think-about-the-grammar-of-graphics-when-improving-your-graphs-18e3744d8d18
+---
+
+background-image: url(img/plot_ggplot.png)
+background-size: 750px
+background-position: 50% 45%
+
+# Introducción al *ggplot2*
+
+---
+
+# Histograma ggplot2
+
+El histograma es un gráfico en el cual se presenta la distribución de valores numéricos de una variable.
+Dicha variable tendrá sus valores numéricos representados en el eje horizontal (`y`) y el en eje vertical (`x`) la frecuencia de dicho valor.
+
+```{r, echo=FALSE, warning=FALSE, message=FALSE}
+ggplot(airbnb) + geom_histogram(aes(x=price))
+```
+---
+
+class: clear, middle, center, inverse
+
+# Volviendo a los datos de Rio de Janeiro...
+
+---
+
+# Como se distribuyen los datos de precio?
+
+```{r}
+ggplot(airbnb) + geom_histogram(aes(x=price))
+```
+
+---
+# Cual es el valor precio medio de los alquileres?
+Para sabe el valor media, podemos usar la función `mean` y pasar a esta función e objeto que contiene los datos y cual columna queremos tener el valor medio calculado.
+
+Para informar qué columna se debe usar, basta usar `$`:
+
+`objeto$columna`
+
+```{r}
+mean(airbnb$price)
+```
+
+---
+class: inverse, clear, middle, center
+# Conociendo el *pipe* (%>%)
+
+---
+
+background-image: url(https://www.pockettactics.com/wp-content/sites/pockettactics/2022/10/mario-warp-pipes-550x309.jpg)
+background-size: 800px
+background-position: 50% 50%
+
+# %>% 
+---
+
+# %>%
+
+El `pipe`, o tubulación, es una manera de desencadenar una secuencia de acciones (funciones, transformaciones, etc);
+
+Ejemplo, supongamos que queiramos hacen un mapa de los alquileres que tengan el `room_type` igual a "Shared room". Podríamos hacer así:
+```{r, warning=FALSE, message=FALSE}
+# primer paso
+shared_rooms <- filter(airbnb,
+                       room_type == 'Shared room')
+# segundo paso
+tm_shape(shared_rooms)+
+  tm_dots()
+```
+
+---
+O así:
+```{r, warning=FALSE}
+airbnb %>% 
+  filter(room_type == 'Shared room') %>% 
+  tm_shape()+
+  tm_dots()
+```
+
+---
+
+class: inverse, middle, clear, center
+
+# Ctrl + Shift + M: %>%
+
+---
+
+# Precio médio por barrio
+
+Cómo podríamos calcular el valor medio de los alquileres por barrio?
+
+Vamos a ocupar las funciones:
+* `group_br()` (agrupar por) y
+* `summarise()` (resumen);
+--
+
+* Y claro, el `%>%`
+
+---
+# Precio médio por barrio
+
+Voy a agrupar los datos de `airbnb` por la columna `neighbourhood` (barrio) y aplicar el `summarise()`, calculando el valor medio de la columna `price`;
+
+```{r}
+# Cual es el valor medio por barrio?
+airbnb %>% 
+  group_by(neighbourhood) %>% 
+  summarise(
+    media = mean(price)
+    )
+```
+
+---
+# Precio médio por barrio
+
+Para mejorar un poco la presentación, voy a usar al final la función `arrange()` y `desc()`para ordenar los valores de forma decreciente, así tendremos los valores más elevados primero:
+
+```{r}
+airbnb %>% group_by(neighbourhood) %>% summarise(media = mean(price)) %>% arrange(desc(media))
+```
+
+---
+
+class: inverse, middle, center, clear
+
+# Dónde podríamos quedarnos pagando el valor promedio?
+
+---
+# Dónde podríamos quedarnos con el valor promedio
+
+```{r, warning=FALSE}
+airbnb_814 <- airbnb %>% filter(price <= 814)
+tm_shape(rj)+
+  tm_polygons() +
+  tm_shape(airbnb_814) + 
+  tm_dots()
+```
+---
+
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Copacabana_06_2016_2377.jpg/320px-Copacabana_06_2016_2377.jpg), url(https://media.tacdn.com/media/attractions-splice-spp-674x446/0b/39/9d/ff.jpg)
+background-size: 400px, 400px
+background-position: 0% 50%, 90% 50%
+
+# Y si filtramos por algunos barrios?
+
+Dos barrios bastante conocidos en Rio son Capacabana y Barra da Tijuca. Están cerca a la playa, pero representam ambientes distintos:
+
+---
+# Y si filtramos por algunos barrios?
+
+Como tenemos la info del barrio, podríamos investigar los barrios que más nos interesa, usando el `filter()` y el operador `%in%`.
+
+```{r, warning=FALSE}
+airbnb_814 <- 
+  airbnb_814 %>% 
+  filter(neighbourhood %in% 
+           c("Copacabana", "Barra da Tijuca"))
+```
+
+---
+background-image: url("./img/ExplicandoBoxPlot.png")
+background-size: 600px
+background-position: 50% 90%
+
+# Precio medio en Barra y Copacabana
+
+Otra herramienta grafica bastante interesante es el `boxplot`.
+
+Se trata de uma gráfico que, como el histograma, nos permite entender la distribución de los valores de una columna, pero además nos brindas otras informaciones importantes:
+
+---
+# variación de valores con boxplot
+
+```{r}
+ggplot(airbnb_814) + 
+  geom_boxplot(aes(x=price))
+```
+---
+# boxplot por barrio
+
+```{r}
+ggplot(airbnb_814) + 
+  geom_boxplot(
+    aes(x=price, 
+        group=neighbourhood, 
+        fill=neighbourhood))
+```
+
+---
+# Dividiendo el grafico por barrio
+
+La función `facet_grid()` de `ggplot2`, nos permite separar los graficos por una determinada variable. Ya tenemos nuestro boxplot diferenciando los valores acorde al barrio (`neighbourhood`). Con el `facet_grid` podremos dividirlos también por el tipo de alquiler...
+
+```{r, eval=FALSE}
+ggplot(airbnb_814) + 
+  geom_boxplot(
+    aes(x=price, 
+        group=neighbourhood,
+          fill=neighbourhood)) +
+  facet_grid(.~room_type)
+```
+---
+# Dividiendo el grafico por barrio
+
+```{r, echo=FALSE}
+ggplot(airbnb_814) + 
+  geom_boxplot(
+    aes(x=price, 
+        group=neighbourhood,
+          fill=neighbourhood)) +
+  facet_grid(.~room_type)
+```
