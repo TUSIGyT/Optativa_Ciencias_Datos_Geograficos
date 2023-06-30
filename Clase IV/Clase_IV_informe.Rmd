@@ -1,0 +1,306 @@
+---
+title: "Ciencia de datos geográficos<br><br>"
+author: "Silvia Laceiras <br> Felipe Sodré M. Barros <br>  <br> Fabián Rechberger"
+output:
+  xaringan::moon_reader:
+    css: [metropolis]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: clear, inverse, middle, center
+
+# Creando informes desde R
+
+---
+
+class: clear, inverse, middle, center
+
+# Markdown
+
+---
+background-image: url(https://upload.wikimedia.org/wikipedia/commons/thumb/4/48/Markdown-mark.svg/250px-Markdown-mark.svg.png)
+background-size: 600px
+background-position: 50% 70%  
+# Markdown
+
+**Markdown** es una manera de formatar textos usando **marcaciones**.
+
+Fue creado por *John Gruber* y *Aaron Swartz* que buscaron  conseguir la máxima legibilidad y facilidad de publicación de textos tanto en su forma de entrada como de salida.
+
+---
+
+class: clear, inverse, middle, center
+
+# Hoy se puede ocupar hasta en whatsapp
+
+---
+
+# Probando Markdown en whatsapp
+
+Les incentivo a probar usar **markdown** en el whatsapp:
+Escriba un mensaje **corto** a algún amigo, usando las siguientes marcaciones:
+* dos guión-bajos al princípio y al fin:  
+`__palabra palabra__`
+* dos asteristicos al princípio y al fin:  
+`**palabra palabra**`
+* un til (~) al princípio y al fin:  
+`~palabra palabra~`
+
+--
+
+Qué resultado tuvieron?
+
+---
+
+class: clear, inverse, middle, center
+
+# Felicitaciones ya están usando Markdown para formatar tus mnsajes!
+
+---
+
+class: clear, inverse, middle, center
+
+# Ahora lo mejor: RMarkdown
+
+---
+
+# RMarkdown
+
+Considerando la facilidad que el Markdown nos brinda en formatar un texto y lo complejo que suele ser la creacción de informes, se creó un paquete llamado `RMarkdown`.
+
+RMarkdown fue creado para facilitar la reprodutibilidad permitiendo que tanto el codigo cuanto la narrativa (texto) están en el mismo documento, y el resultado final es generado automaticamente.
+
+
+El Rmarkdown nos brinda un ecosistema completo para la elaboración de informes directamente desde R, como:
+
+* Producir informes en los formatos: PDF, HTML, or Word;
+* Creacción de presentaciones (HTML5, LaTeX Beamer, or PowerPoint);
+* Añadir a dichos informes trechos de codigos que será ejecutados en el momento de creacción del documento;
+
+--
+
+background-image: url(https://bookdown.org/yihui/rmarkdown/images/hex-rmarkdown.png)
+background-size: 400px
+background-position: 90% 90%
+
+---
+
+# Instalación
+
+La instalación no es diferente:
+
+```{r, eval=FALSE}
+install.packages('rmarkdown')
+```
+
+---
+background-image: url(./img/creando_rmd.png)
+background-size: 200px
+background-position: 50% 50%
+
+# Creando documento Rmd
+
+
+---
+background-image: url(./img/creando_rmd2.png)
+background-size: 400px
+background-position: 50% 50%
+
+# Creando documento Rmd
+
+Al crear un `script` de RMarkdown, se está creando un archivo con extensión `.Rmd`
+
+---
+background-image: url(./img/creando_rmd3.png)
+background-size: 400px
+background-position: 50% 50%
+
+# Creando documento Rmd
+
+Al crear un `script` de RMarkdown, se está creando un archivo con extensión `.Rmd`
+
+---
+background-image: url(./img/entendiendo_rmarkdown.png)
+background-size: 400px
+background-position: 50% 50%
+
+# Entendiendo el Rmd
+
+Entendiendo la documento de "entrada":
+
+---
+
+background-image: url(./img/exportando_rmd.png)
+background-size: 400px
+background-position: 50% 50%
+
+# Transformando el script en informe final
+
+Configurando el documento de "salida":
+
+---
+
+background-image: url(./img/exportando_rmd2.png)
+background-size: 400px
+background-position: 50% 50%
+
+# Transformando el script en informe final
+
+Configurando el documento de "salida":
+---
+
+background-image: url(./img/resultado_doc.png)
+background-size: 800px
+background-position: 50% 50%
+
+# Transformando el script en informe final
+
+Configurando el documento de "salida":
+
+---
+
+class: clear, middle, center, inverse
+
+# Empecemos a crear nuestro informe
+
+---
+
+# Informe imobiliário
+Vamos a borrar todo y dejar solamente la configuración inicial:
+```
+---
+title: "Análisis imobiliário"
+author: "Felipe Sodré Mendes Barros"
+date: "`r Sys.Date()`"
+output: word_document
+---
+```
+
+---
+
+# Informe imobiliário
+Vamos a añadir el topico "Introducción" y redactar al respecto de los datos y objetivos del análisis:
+
+```
+---
+title: "Análisis imobiliário"
+author: "Felipe Sodré Mendes Barros"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+# Introducción
+
+Este informe tiene como objetivo presentar los análisis
+hechos para identificar los departamentos
+de alta gama en Copacabana y Leme, usando datos de Airbnb.
+
+```
+
+---
+
+# Informe imobiliário
+Vamos a añadir nuestro primero mapa del informe.
+Para eso, tenemos que:
+* Crear un trecho de código en R;
+* Cargar las librerías que necesitamos;
+
+---
+
+background-image: url(./img/informe.png)
+background-size: 600px
+background-position: 50% 50%
+
+# Informe imobiliário
+
+---
+
+# Informe imobiliário
+Ahora vamos a añadir un subtopico (##) para comentar al respecto de la manipulación de datos. En esta sección vamos:
+* Crear nuevo trecho de código;
+* Cargar el dato a ser usado;
+* Hacer la proyección y el filtrado de dato;
+
+---
+
+background-image: url(./img/informe2.png)
+background-size: 600px
+background-position: 50% 50%
+
+# Informe imobiliário
+
+---
+
+# Informe imobiliário
+Ahora podremos presentar el resultado en forma de mapa:
+* Creamos un nuevo trecho de codigo;
+* Creamos el mapa;
+
+---
+
+background-image: url(./img/informe3.png)
+background-size: 600px
+background-position: 50% 50%
+
+# Informe imobiliário
+
+---
+
+class: middle, clear, center, inverse
+# Resultado?
+
+---
+
+# Configurando los trechos de código
+Los trechos de código pueden ser configurados para definir:
+* Si serán ejecutados - `eval=FALSE`;
+* Si deberán ser presentados los códigos en el documento final - `echo=FALSE`;
+* Si deberán ser presentados los resultado en el documento final - `include=FALSE`;
+* Si deberán ser presentados los mensajes de aviso en el documento final - `warning=FALSE`;
+
+---
+background-image: url(./img/configtrechocodigo.png)
+background-size: 600px
+background-position: 50% 50%
+
+# Configurando trecho de código
+
+---
+background-image: url(./img/resultado_doc2.png)
+background-size: 900px
+background-position: 50% 50%
+
+# Resultado
+
+---
+
+class: inverse, clear, middle, center
+
+# Tareas extra:
+
+---
+
+# Creando PDF
+
+Para que se pueda exportar el informe en PDF, tendremo que inestalar un paqeute más, que nos va a brindar `LaTeX` (otro linguaje de formatación de texto - más complejo que Markdown) que es usado en PDF:
+
+```{r, eval=FALSE}
+install.packages('tinytex')
+tinytex::install_tinytex()  # install TinyTeX
+```
+
+---
+
+# Tareas extra:
+
+Redactar un informe:
+* Con un texto de tu autoría explicando:
+    * la importancia del análsis de agrupación espacial;
+    * como funciona el `dbscan` y sus parámetros;
+* Presentando el desafío del análisis hecho en la clase anterior, bien como las deciiones tomadas para la realizacón del mismo;
+* Presente los resultados del análisis de agrupación hechos como tarea extra;
+* Presente los resutlados en mapas (Si hace falta, usar el paquete `geobr` para dar más contexto al mapa);

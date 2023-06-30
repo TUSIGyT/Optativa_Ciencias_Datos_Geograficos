@@ -1,0 +1,186 @@
+---
+title: "Ciencia de datos geográficos<br><br>"
+author: "Silvia Laceiras <br> Felipe Sodré M. Barros <br>  <br> Fabián Rechberger"
+output:
+  xaringan::moon_reader:
+    css: [metropolis]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: clear, inverse, middle, center
+
+# Usando R para acceder a datos espaciales en _PostGIS_
+
+---
+
+# El paquete _sf_
+
+Como vmos en las primeras clases, el paquete `sf` es el paquete principal para trabajarmos con datos vectoriales en `R`.
+
+--
+
+Con su función `st_read()` pudimos cargar datos que estaban en el formato _shapefile_. Se acuerdan cuando trabajamos con los datos de población?
+
+```{r, eval=FALSE}
+library(sf)
+library(tmap)
+poblacion <- st_read(
+  "./datos/vectoriales/Misiones_con_datos.shp")
+```
+
+---
+
+# Cargando datos vectoriales desde PostGIS
+
+El paquete `sf` es tán bien estructurado que nos permite leer el dato almacenado en una base de datos de PostGIS con la misma función. 
+
+**Vamos a probar?**
+
+---
+# Informaciones que vamos a necesitar:
+
+Para acceder al dato de la base de datos, vamos a necesitar saber:
+ - el nombre de la base de datos donde está almacenado el dato;
+ - las credenciales de acceso (nombre de usuário y contraseña);
+ - el driver a ser usado;
+ - el _IP_ donde se encuentra la base. Como la misma se encuentra en nuestra propia computadora, podemos usar 'localhost';
+
+```{r, echo=FALSE}
+dsn = "PG:dbname='nyc' host='172.17.0.2' port='5432' user='postgres' password='postgres'"
+```
+```{r, eval=FALSE}
+dsn = "PG:dbname='nyc' host='localhost' port='5432' user='postgres' password='postgres'"
+```
+---
+
+background-image: url(img/bases_datos.png)
+background-size: 800px
+background-position: 50% 70%
+
+# Identificando la base de datos:
+
+<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+
+---
+background-image: url(img/tables.png)
+background-size: 400px
+background-position: 50% 100%
+
+# Identificando las capas disponibles:
+
+---
+
+# Cargando datos vectoriales desde PostGIS
+
+```{r, eval=FALSE}
+library(sf)
+dsn = "PG:dbname='nyc' host='localhost' port='5432' user='postgres' password='postgres'"
+
+homicios <- st_read(dsn, "nyc_homicides")
+```
+
+```{r, echo=FALSE, message=FALSE, warning=FALSE}
+library(sf)
+library(tmap)
+dsn = "PG:dbname='nyc' host='172.17.0.2' port='5432' user='postgres' password='postgres'"
+
+homicios <- st_read(dsn, "nyc_homicides")
+```
+
+---
+
+# Usando la capa cargada
+
+```{r}
+homicios
+```
+
+---
+
+# Listando las capas espaciales almacenadas en la base de datos:
+As veces necesitamos saber desdel R qué otras capas están almacenadas en la base de datos... Para eso podríamos ocupar la función `st_layers`:
+
+```{r}
+st_layers(dsn)
+```
+---
+
+# Usando la capa cargada
+
+```{r}
+tm_shape(homicios) + 
+  tm_dots()
+```
+---
+
+class: inverse, clear, middle, center
+
+# Como podríamos hacer un mapa de los homicidios diferenciando los barrios por color (_boroname_)?
+
+---
+
+# Mapa de homicidios por barrios
+
+```{r}
+tm_shape(homicios) + 
+  tm_dots(col = "boroname")
+```
+---
+
+class: inverse, clear, middle, center
+
+# Podríamos hacer un mapa con el tamaño de los puntos representando la cantidad de victimas (_num_victim_)?
+
+---
+# Cambiando el tipo de dato
+
+```{r}
+library(tidyverse)
+homicios <- 
+  homicios %>% 
+  mutate(num_victim =
+           as.integer(num_victim))
+```
+---
+
+# Mapa con puntos representando cantidad de victimas
+
+```{r}
+tm_shape(homicios) +
+  tm_dots(size = "num_victim")
+```
+---
+# Probando _tm_bubbles_ 
+
+```{r}
+tm_shape(homicios) +
+  tm_bubbles(size = "num_victim")
+```
+---
+
+class: clear, inverse, middle, center
+
+# Cómo podríamos representar la cantidad de victimas por tamaño de los puntos y los barrios por color?
+---
+
+# Victimas y barrios
+
+```{r}
+tm_shape(homicios) +
+  tm_bubbles(size = "num_victim", 
+             col = "boroname")
+```
+
+---
+
+# Victimas y barrios en mapas distintos
+
+```{r}
+tm_shape(homicios) +
+  tm_bubbles(size = "num_victim") +
+  tm_facets(by = "boroname")
+```

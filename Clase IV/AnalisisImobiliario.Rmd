@@ -1,0 +1,65 @@
+---
+title: "AnalisisImobiliario"
+author: "Felipe Sodré Mendes Barros"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+
+# Introducción
+Este informe tiene como objetivo presentar el análisis de agrupación espacial de los departamentos del barrio de Copacabana y Leme en Rio de Janeiro, Brasil.
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE}
+library(sf)
+library(tmap)
+library(tidyverse)
+library(dbscan) #nuevo
+```
+
+## Carga y manipulación de datos
+Se utilizaron los datos de Airbnb. Los mismos fueron filtrado por barrio y valor de alquiler.
+
+```{r, message=FALSE, warning=FALSE, echo=FALSE, include=FALSE}
+datos <- read_csv("./Datos/AirbnbRJRentals_modificado.csv")
+
+# transformando en geografico
+airbnb <- st_as_sf(
+  datos, 
+  coords = c("longitude", "latitude"),
+  crs=4326)
+
+airbnb <- st_transform(airbnb, 32723)
+
+copacabana <- airbnb %>% filter(
+  neighbourhood %in% c("Copacabana", "Leme"),
+  room_type == "Entire home/apt")
+```
+
+## Mapa
+
+Así quedó el mapa:
+
+```{r}
+tm_shape(copacabana) + # comentario
+  tm_dots()
+```
+
+El precio promedio es de `r mean(copacabana$price)`.
+
+* item
+* item
+* item
+
+1. item
+2. item
+
+```{r}
+tmap_mode("view")
+tm_shape(airbnb) +
+  tm_dots() + 
+  tm_grid()
+```
+

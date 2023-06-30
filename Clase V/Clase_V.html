@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Ciencia de datos geográficos  </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Silvia Laceiras   Felipe Sodré M. Barros     Fabián Rechberger" />
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Ciencia de datos geográficos<br><br>
+]
+.author[
+### Silvia Laceiras <br> Felipe Sodré M. Barros <br> <br> Fabián Rechberger
+]
+
+---
+
+
+class: clear, inverse, middle, center
+
+# Usando R para acceder a datos espaciales en _PostGIS_
+
+---
+
+# El paquete _sf_
+
+Como vmos en las primeras clases, el paquete `sf` es el paquete principal para trabajarmos con datos vectoriales en `R`.
+
+--
+
+Con su función `st_read()` pudimos cargar datos que estaban en el formato _shapefile_. Se acuerdan cuando trabajamos con los datos de población?
+
+
+```r
+library(sf)
+library(tmap)
+poblacion &lt;- st_read(
+  "./datos/vectoriales/Misiones_con_datos.shp")
+```
+
+---
+
+# Cargando datos vectoriales desde PostGIS
+
+El paquete `sf` es tán bien estructurado que nos permite leer el dato almacenado en una base de datos de PostGIS con la misma función. 
+
+**Vamos a probar?**
+
+---
+# Informaciones que vamos a necesitar:
+
+Para acceder al dato de la base de datos, vamos a necesitar saber:
+ - el nombre de la base de datos donde está almacenado el dato;
+ - las credenciales de acceso (nombre de usuário y contraseña);
+ - el driver a ser usado;
+ - el _IP_ donde se encuentra la base. Como la misma se encuentra en nuestra propia computadora, podemos usar 'localhost';
+
+
+
+```r
+dsn = "PG:dbname='nyc' host='localhost' port='5432' user='postgres' password='postgres'"
+```
+---
+
+background-image: url(img/bases_datos.png)
+background-size: 800px
+background-position: 50% 70%
+
+# Identificando la base de datos:
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+---
+background-image: url(img/tables.png)
+background-size: 400px
+background-position: 50% 100%
+
+# Identificando las capas disponibles:
+
+---
+
+# Cargando datos vectoriales desde PostGIS
+
+
+```r
+library(sf)
+dsn = "PG:dbname='nyc' host='localhost' port='5432' user='postgres' password='postgres'"
+
+homicios &lt;- st_read(dsn, "nyc_homicides")
+```
+
+
+```
+## Reading layer `nyc_homicides' from data source 
+##   `PG:dbname='nyc' host='172.17.0.2' port='5432' user='postgres' password='postgres'' 
+##   using driver `PostgreSQL'
+## Simple feature collection with 3982 features and 8 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 563897.6 ymin: 4484964 xmax: 609511 ymax: 4529499
+## Projected CRS: NAD83 / UTM zone 18N
+```
+
+---
+
+# Usando la capa cargada
+
+
+```r
+homicios
+```
+
+```
+## Simple feature collection with 3982 features and 8 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: 563897.6 ymin: 4484964 xmax: 609511 ymax: 4529499
+## Projected CRS: NAD83 / UTM zone 18N
+## First 10 features:
+##    incident_d      boroname num_victim primary_mo id weapon light_dark year
+## 1  2008-01-01      Brooklyn          1       &lt;NA&gt;  7    gun          D 2008
+## 2  2008-01-04     Manhattan          1       &lt;NA&gt; 14    gun          D 2008
+## 3  2008-01-05        Queens          1       &lt;NA&gt; 15    gun          D 2008
+## 4  2008-01-04        Queens          1       &lt;NA&gt; 16  knife          D 2008
+## 5  2008-01-05        Queens          1       &lt;NA&gt; 18    gun          D 2008
+## 6  2008-01-07      Brooklyn          1       &lt;NA&gt; 20    gun          D 2008
+## 7  2008-01-10     Manhattan          1       &lt;NA&gt; 22    gun          D 2008
+## 8  2008-01-10     Manhattan          1       &lt;NA&gt; 23    gun          D 2008
+## 9  2008-01-13 Staten Island          1       &lt;NA&gt; 25    gun          D 2008
+## 10 2008-01-16        Queens          1       &lt;NA&gt; 27    gun          D 2008
+##                        geom
+## 1  POINT (592158.7 4502211)
+## 2    POINT (588655 4517855)
+## 3  POINT (605800.8 4505731)
+## 4  POINT (594255.2 4512250)
+## 5  POINT (605498.1 4496053)
+## 6    POINT (592021 4505734)
+## 7  POINT (584055.5 4511775)
+## 8  POINT (587283.7 4516908)
+## 9  POINT (570593.1 4498223)
+## 10   POINT (607386 4501507)
+```
+
+---
+
+# Listando las capas espaciales almacenadas en la base de datos:
+As veces necesitamos saber desdel R qué otras capas están almacenadas en la base de datos... Para eso podríamos ocupar la función `st_layers`:
+
+
+```r
+st_layers(dsn)
+```
+
+```
+## Driver: PostgreSQL 
+## Available layers:
+##            layer_name     geometry_type features fields             crs_name
+## 1   nyc_census_blocks     Multi Polygon    38794      8 NAD83 / UTM zone 18N
+## 2       nyc_homicides             Point     3982      8 NAD83 / UTM zone 18N
+## 3   nyc_neighborhoods     Multi Polygon      129      2 NAD83 / UTM zone 18N
+## 4         nyc_streets Multi Line String    19091      4 NAD83 / UTM zone 18N
+## 5 nyc_subway_stations             Point      491     14 NAD83 / UTM zone 18N
+```
+---
+
+# Usando la capa cargada
+
+
+```r
+tm_shape(homicios) + 
+  tm_dots()
+```
+
+![](Clase_V_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
+---
+
+class: inverse, clear, middle, center
+
+# Como podríamos hacer un mapa de los homicidios diferenciando los barrios por color (_boroname_)?
+
+---
+
+# Mapa de homicidios por barrios
+
+
+```r
+tm_shape(homicios) + 
+  tm_dots(col = "boroname")
+```
+
+![](Clase_V_files/figure-html/unnamed-chunk-9-1.png)&lt;!-- --&gt;
+---
+
+class: inverse, clear, middle, center
+
+# Podríamos hacer un mapa con el tamaño de los puntos representando la cantidad de victimas (_num_victim_)?
+
+---
+# Cambiando el tipo de dato
+
+
+```r
+library(tidyverse)
+```
+
+```
+## ── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──
+## ✔ dplyr     1.1.2     ✔ readr     2.1.4
+## ✔ forcats   1.0.0     ✔ stringr   1.5.0
+## ✔ ggplot2   3.4.2     ✔ tibble    3.2.1
+## ✔ lubridate 1.9.2     ✔ tidyr     1.3.0
+## ✔ purrr     1.0.1     
+## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## ✖ dplyr::filter() masks stats::filter()
+## ✖ dplyr::lag()    masks stats::lag()
+## ℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors
+```
+
+```r
+homicios &lt;- 
+  homicios %&gt;% 
+  mutate(num_victim =
+           as.integer(num_victim))
+```
+---
+
+# Mapa con puntos representando cantidad de victimas
+
+
+```r
+tm_shape(homicios) +
+  tm_dots(size = "num_victim")
+```
+
+![](Clase_V_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+---
+# Probando _tm_bubbles_ 
+
+
+```r
+tm_shape(homicios) +
+  tm_bubbles(size = "num_victim")
+```
+
+![](Clase_V_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
+---
+
+class: clear, inverse, middle, center
+
+# Cómo podríamos representar la cantidad de victimas por tamaño de los puntos y los barrios por color?
+---
+
+# Victimas y barrios
+
+
+```r
+tm_shape(homicios) +
+  tm_bubbles(size = "num_victim", 
+             col = "boroname")
+```
+
+![](Clase_V_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+---
+
+# Victimas y barrios en mapas distintos
+
+
+```r
+tm_shape(homicios) +
+  tm_bubbles(size = "num_victim") +
+  tm_facets(by = "boroname")
+```
+
+![](Clase_V_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "rainbow",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,39 @@
+---
+title: "Ciencia de datos geográficos<br><br>"
+author: "Silvia Laceiras <br> Felipe Sodré M. Barros <br>  <br> Fabián Rechberger"
+output:
+  xaringan::moon_reader:
+    css: [metropolis]
+    lib_dir: libs
+    nature:
+      highlightStyle: rainbow
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: clear, inverse, middle, center
+
+# Trabajo Práctico
+
+---
+
+# Trabajo Práctico
+
+Haciendo uso de los datos de homicidios de NY, elaborar un informe que nos brinde los siguientes conocimientos:
+
+--
+
+- Cuales son los barrios (`boroname`) con más homicídios registrados?
+
+--
+
+- Cuales son las armas más usadas (`weapon`)?
+
+--
+
+- Cuales son las armas (`weapon`) más usadas por barrio?
+
+--
+
+- Crear un análisis de agrupamiento usando `dbscan` para identificar el patrón de distribución espacial de los homicidios;
+  - podés hacerlo para todo el conjunto de dato, o para algún tipo de homicídio en específico (por año, barrio, tipo de arma, cantidad de víctimas, etc). No deje de aclarar qué hiciste y por qué;

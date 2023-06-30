@@ -1,0 +1,43 @@
+---
+title: "Análisis imobiliario"
+author: "Felipe Sodré Mendes Barros"
+date: "`r Sys.Date()`"
+output: word_document
+---
+
+# Introducción
+
+Este informe tiene como objetivo presentar los análisis
+hechos para identificar los departamentos
+de alta gama en Copacabana y Leme, usando datos de Airbnb.
+
+```{r, message=FALSE, echo=FALSE, include=FALSE, warning=FALSE}
+library(sf)
+library(tmap)
+library(tidyverse)
+library(dbscan)
+```
+
+## Manipulación de los datos
+
+Cargamos los datos de Airbnb, proyectamos y filtramos por bario Copacabana y Leme.
+
+```{r, message=FALSE, echo=FALSE, include=FALSE, warning=FALSE}
+datos <- read_csv("./Datos/AirbnbRJRentals_modificado.csv")
+airbnb <- st_as_sf(
+  datos, 
+  coords = c("longitude", "latitude"),
+  crs=4326)
+airbnb <- st_transform(airbnb, 32723)
+copa <- airbnb %>% 
+  filter(neighbourhood %in% 
+           c("Copacabana", "Leme"), 
+         room_type == "Entire home/apt")
+```
+
+Resulato de la manipuación:
+
+```{r}
+tm_shape(copa) + 
+  tm_dots()
+```

@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Ciencia de datos geográficos  </title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Silvia Laceiras   Felipe Sodré M. Barros     Fabián Rechberger" />
+    <script src="libs/header-attrs-2.21/header-attrs.js"></script>
+    <link href="libs/remark-css-0.0.1/metropolis.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Ciencia de datos geográficos<br><br>
+]
+.author[
+### Silvia Laceiras <br> Felipe Sodré M. Barros <br> <br> Fabián Rechberger
+]
+
+---
+
+
+class: clear, inverse, middle, center
+
+# Algoritmos de agrupación (clustering)!
+
+---
+
+class: clear, inverse, middle, center
+
+# Supongamos que estamos trabajando para una empresa del sector imobiliário de Rio de Janeiro que quiere invertir en departamentos de "alta gama" en el barrio de Copacabana.
+
+---
+
+class: clear, inverse, middle, center
+
+# Pero copacabana es un barrio bastante grande. Por eso nos pide para identificar el patrón espacial de los departamentos disponibles en Airbnb
+
+---
+
+# Identificación de patrones
+
+Una de las actividades más comunes en análisis de datos es la identificación de patrones.
+
+Al trabajarmos con datos geográficos, pasamos a tener la necesidad de identificar **patrones espaciales**.
+
+Aunque existan distintos algoritmos para dicha tarea, vamos a ver que al trabajar con datos espaciales quizás tengamos que considerar algún algoritmo que lleve en consideración el atributo espacial.
+
+---
+
+background-image: url("./img/dbscan-idea.png")
+background-size: 600px
+background-position: 50% 20%    
+
+# Agrupación: ejemplo
+
+Cómo ustedes agruparían los elementos de cada base de datos?
+
+---
+
+# DBSCAN: Density-Based Spatial Clustering and Application with Noise
+DBSCAN es un algoritmo de aprendizaje de maquina (`machine learning`) diseñado para identificar agrupamientos ("clusters") espaciales. 
+
+Es decir, DBSCAN es capaz de identificar elementos próximos entre si de acuerdo a sus atributos **en varias dimensiones**, **inclusive espacial**.
+
+DBSCAN está diseñado para trabajar con datos espaciales, lo que lo diferencíaa de algoritmos como **KMeans**.
+
+---
+
+background-image: url("./img/dbscan-idea.png")
+background-size: 600px
+background-position: 50% 20%    
+
+# Introducción al DBSCAN
+
+Cómo ustedes agruparían los elementos de cada base de datos?
+
+--
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+Una agrupación es un área con gran ocurrencia de datos (densidad elevada) en el espacio, separada por regiones de baja densidad de datos.
+
+---
+
+background-image: url("./img/cluster_comparison.png")
+background-size: 700px
+background-position: 50% 50%    
+
+# DBSCAN y Kmeans
+
+---
+
+# DBSCAN en detalle
+
+**Objetivo:** El objetivo es identificar regiones de alta densidad de datos, que se pueden medir por la cantidad de objetos cercanos a un punto dado.
+
+--
+
+**Parámetros:** 
+* `epsilon` ("eps"): Define el radio de vecindad alrededor de un punto `x`;
+* `puntos mínimos` ("MinPts"): Define el número mínimo de vecinos dentro del radio "eps" para que exista una agrupación;
+
+--
+
+**Conceptos**:
+
+*Punto central*: Cualquier punto `x` en el conjunto de datos, con un conteo de vecinos mayor o igual a `MinPts`, se marca como un punto central;
+
+*Punto frontera*: Decimos que `x` es un punto de borde, si el número de sus vecinos es menor que `MinPts`, pero pertenece a una agrupación de algún punto central `z`.
+
+*Punto ruído*: Si un punto no es ni un núcleo ni un punto de borde, entonces se llama un punto de ruído o un valor atípico.
+
+---
+background-image: url("./img/dbscan-principle.png")
+background-size: 550px
+background-position: 50% 5%
+# DBSCAN: conceptos
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+La siguiente figura muestra los diferentes tipos de puntos, usando `MinPts` = 6:
+* **núcleo**;
+* **borde** y;
+* **puntos atípicos**
+
+`x` es un **punto central** porque posee 6 vecinos internos a `ϵ`;  
+`y` es un **punto de borde** porque posee menos de 6 vecinos, pero hace parte de la agrupaión de `x`;  
+`z` es un punto de ruído: No posee 6 vecinos ni hace parte de ningún grupo;  
+
+---
+
+class: inverse, clear, middle, center
+# Manos a la obra!
+
+---
+
+class: inverse, clear, middle, center
+# Como vamos a seguir usando los datos de Rio de Janeiro, vamos a seguir con el proyecto de la clase anterior. Pero vamos a crear un *script* nuevo...
+
+
+---
+
+# Paquete nuevo: dbscan
+Vamos a ocupar el paquele [`dbscan`](https://cran.r-project.org/web/packages/dbscan/vignettes/dbscan.pdf). 
+
+Como no lo ocupamos todavía, es probable que tengamos que instalarlo:
+
+--
+
+
+```r
+install.packages("dbscan")
+```
+---
+
+# Cargando los paquetes necesarios
+
+Tal cual como en la clase anterior, vamos a ocupar los paquetes:
+
+--
+
+
+```r
+library(sf)
+library(tmap)
+library(tidyverse)
+library(dbscan) #nuevo
+```
+---
+
+class: inverse, clear, middle, center
+# Carga de datos y preparación
+
+---
+
+# Cargando los datos de Airbnb
+
+Vamos a cargar el dato `csv` con la función `read_csv`, del paquete `readr`, que nos brinda `tidyverse`.
+
+
+```r
+datos &lt;- read_csv("./Datos/AirbnbRJRentals_modificado.csv")
+```
+
+```
+## Rows: 27507 Columns: 16
+## ── Column specification ────────────────────────────────────────────────────────
+## Delimiter: ","
+## chr   (4): name, host_name, neighbourhood, room_type
+## dbl  (11): id, host_id, latitude, longitude, price, minimum_nights, number_o...
+## date  (1): last_review
+## 
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+```
+
+---
+
+# Dataframe a dato geográfico
+
+Para convertir el `csv` en un dato geográfico tendremos que usar la función `st_as_sf`, informando cuales columnas teienen la información de coordenadas:
+
+**Atención**: Vamos a informar el Sistema de Referência de Coordenadas (SRC) = [4326](https://epsg.io/4326) (geográfico)
+
+
+```r
+# transformando en geografico
+(airbnb &lt;- st_as_sf(
+  datos, 
+  coords = c("longitude", "latitude"),
+  crs=4326)
+ )
+```
+
+```
+## Simple feature collection with 27507 features and 14 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -43.70591 ymin: -23.07284 xmax: -43.1044 ymax: -22.74969
+## Geodetic CRS:  WGS 84
+## # A tibble: 27,507 × 15
+##         id name   host_id host_name neighbourhood room_type price minimum_nights
+##  *   &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;         &lt;chr&gt;     &lt;dbl&gt;          &lt;dbl&gt;
+##  1 1.05e 7 Sobra…  5.39e7 Quiá      Laranjeiras   Entire h…   581              1
+##  2 5.39e 7 Quadr…  3.34e8 Lucas     Copacabana    Entire h…   898              5
+##  3 7.83e17 Leme,…  4.92e8 Felipe    Leme          Entire h…   720              1
+##  4 7.04e17 Suíte…  2.04e7 Júlio Ce… Botafogo      Private …   599              4
+##  5 7.83e17 Apart…  3.02e8 Laís      Laranjeiras   Entire h…   240              3
+##  6 2.38e 7 Vamos…  8.66e7 Mauro     Barra da Tij… Entire h…   494              3
+##  7 2.16e 7 Copac…  5.53e7 Ronaldo   Copacabana    Entire h…   657              2
+##  8 7.85e17 Leblo…  4.92e8 Licia     Leblon        Entire h…  3509              4
+##  9 4.79e 7 Diver…  3.86e8 Wagner    Ipanema       Entire h…  1300              4
+## 10 7.83e17 apart…  6.36e6 Francisco Centro        Entire h…   232              3
+## # ℹ 27,497 more rows
+## # ℹ 7 more variables: number_of_reviews &lt;dbl&gt;, last_review &lt;date&gt;,
+## #   reviews_per_month &lt;dbl&gt;, calculated_host_listings_count &lt;dbl&gt;,
+## #   availability_365 &lt;dbl&gt;, number_of_reviews_ltm &lt;dbl&gt;, geometry &lt;POINT [°]&gt;
+```
+
+---
+
+# Proyectando el dato
+
+Como nuestros datos están en formato geográfico, vamos a convertirlos al sistema proyectado (crs [32712](https://epsg.io/32723)), usando la función `st_transform`.
+
+De esa manera, podremos informar y pensar en el parámetro `eps`, del DBSCAN, como una distáncia en metros.
+
+
+```r
+airbnb &lt;- st_transform(airbnb, 32723)
+```
+
+---
+
+# Limpieza de datos: filtrado
+
+Vamos a ocupar la función `filter`, para limitar a los datos que sean de los barrios "Copacabana" y "Leme" y que estén ofreciendo todo el departamento (`Entire home/apt`):
+
+--
+
+
+```r
+copa &lt;- airbnb %&gt;% 
+  filter(neighbourhood %in% 
+           c("Copacabana", "Leme"), 
+         room_type == "Entire home/apt")
+```
+
+---
+
+# Precios del alquiler en Copacabana y Leme
+
+Vamos a identificar la distribución de los valores de precio para definir qué sería "de alta gama":
+
+
+```r
+summary(copa$price)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##    58.0   453.0   700.0   899.3  1071.0  4983.0
+```
+--
+
+background-image: url("./img/Iqr_with_quantile.png")
+background-size: 500px
+background-position: 50% 90%
+
+---
+
+# Filtrando los departamentos por precio
+
+Como queremos los departamentos más caros, podemos usar el tercer cuartil de los precios para identificar los 25% más caros...
+
+--
+
+
+```r
+copa &lt;- copa %&gt;% filter(price &gt;= 1071)
+```
+
+---
+
+class: inverse, clear, middle, center
+
+# Ya podrían hacer un mapa, no?
+
+---
+
+# Primer análsis de agrupación espacial:
+
+Vamos a ejecutar el DBSCAN buscando los grupos en un radio de 100 metros (una cuadra mas o menos) y que tengan al menos 10 otros departamentos:
+
+
+```r
+(clusters_spacial_100_10 &lt;- 
+   dbscan(
+     st_coordinates(copa), 
+     eps = 100, 
+     minPts = 10))
+```
+
+```
+## DBSCAN clustering for 1831 objects.
+## Parameters: eps = 100, minPts = 10
+## Using euclidean distances and borderpoints = TRUE
+## The clustering contains 4 cluster(s) and 84 noise points.
+## 
+##    0    1    2    3    4 
+##   84 1708    7   16   16 
+## 
+## Available fields: cluster, eps, minPts, dist, borderPoints
+```
+
+---
+
+# Incorporación de los resultados
+
+Los agrupamientos fueron creados. Falta agregar la info del grupo al cual el punto hace parta en el atributo del mismo:
+
+Para eso vamos a usar la función `mutate`, que nos permite crear y modificar columnas en conjuntos de datos;
+
+
+```r
+copa &lt;- copa %&gt;% mutate(
+  cluster_dbscan_100_10 = # nombre de la columna nueva
+    clusters_spacial_100_10$cluster # valor a inserir en la columna
+  )
+```
+
+---
+
+# Mapa del resultado
+
+
+```r
+tm_shape(copa) + 
+  tm_dots(col = "cluster_dbscan_100_10")
+```
+
+![](Clase_IV_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+---
+class:: inverse, middle, center, clear
+
+# Tareas Extra
+
+---
+
+class:: inverse, middle, center, clear
+
+# Hacer otro análisis de agrupación cambiando el parámetro de distáncia (_eps_) a 50 metros, agregandolo al dato espacial y representando en forma de mapa
+
+---
+
+# Análsisis de agrupación con el _eps_ 50
+
+Y si reduzimos el radio de distáncia a 50 metros?
+
+
+```r
+(clusters_spacial_50_10 &lt;- 
+   dbscan(
+     st_coordinates(copa), 
+     eps = 50, 
+     minPts = 10))
+```
+
+```
+## DBSCAN clustering for 1831 objects.
+## Parameters: eps = 50, minPts = 10
+## Using euclidean distances and borderpoints = TRUE
+## The clustering contains 16 cluster(s) and 857 noise points.
+## 
+##   0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15  16 
+## 857 335 257  28 128  12  12  63  15  28  13  13  19  21  11   8  11 
+## 
+## Available fields: cluster, eps, minPts, dist, borderPoints
+```
+
+---
+
+# Incorporación de los resultados y mapa
+
+Agregando el dato del grupo a la tabla de atributos y mapa:
+
+
+```r
+copa &lt;- copa %&gt;% mutate(
+  cluster_dbscan_50_10 = 
+    clusters_spacial_50_10$cluster
+  )
+
+tm_shape(copa) + 
+  tm_dots(col = "cluster_dbscan_50_10")
+```
+
+![](Clase_IV_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+
+---
+class:: inverse, middle, center, clear
+
+# Para reflexionar: Qué efectos tuvimos al reducir el parámetro de distáncia?
+
+---
+
+class:: inverse, middle, center, clear
+
+# Pero nos fué solicitado hacer un análsisis de agrupación que lleve en consideración no solo el atributo espacial, así como el precio del alquiler. 
+---
+
+class:: inverse, middle, center, clear
+
+# En resumen, quieren saber si los departamentos más caros sueles ubicarse en una misma región
+
+---
+
+class:: inverse, middle, center, clear
+
+# Consigna: Analizar la ayuda (_help_) de la función _dbscan_ e identificar cómo podríamos hacer con que el algoritmos considere también es precio en la identificación de los grupos.
+
+---
+
+# Agrupación considerando el precio
+
+Hasta el momento, el `dbscan` estuvo identificando los grupos por su ubicación. Pero necesitamos que los grupos no sean solamente por el atributo espacial si no que, también, considerando el valor del alquiler.
+
+Para eso debemos usar elparámetro de peso (`weights`) del `dbscan`:
+
+
+```r
+(clusters_precio &lt;- 
+   dbscan(
+     st_coordinates(copa), 
+     eps = 100, 
+     minPts = 10, 
+     weights = copa$price))	
+```
+
+```
+## DBSCAN clustering for 1831 objects.
+## Parameters: eps = 100, minPts = 10
+## Using euclidean distances and borderpoints = TRUE
+## The clustering contains 13 cluster(s) and 0 noise points.
+## 
+##    1    2    3    4    5    6    7    8    9   10   11   12   13 
+## 1812    1    2    1    6    1    1    1    1    1    2    1    1 
+## 
+## Available fields: cluster, eps, minPts, dist, borderPoints
+```
+
+---
+
+# Incorporación de los resultados y mapa
+
+
+```r
+copa &lt;- copa %&gt;% mutate(
+  clusters_precio = 
+    clusters_precio$cluster
+  )
+
+tm_shape(copa) + 
+  tm_dots(col = "clusters_precio")
+```
+
+![](Clase_IV_files/figure-html/unnamed-chunk-15-1.png)&lt;!-- --&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "rainbow",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
