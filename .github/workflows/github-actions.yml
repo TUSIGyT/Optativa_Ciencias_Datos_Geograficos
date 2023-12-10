@@ -1,0 +1,7 @@
+- name: Converts Markdown to HTML
+  uses: jaywcjlove/markdown-to-html-cli@main
+  with:
+    source: README.md
+    output: index.html
+    github-corners: https://github.com/jaywcjlove/markdown-to-html-cli
+
