@@ -3,5 +3,5 @@
   with:
     source: README.md
     output: index.html
-    github-corners: https://github.com/jaywcjlove/markdown-to-html-cli
+      #    github-corners: https://github.com/jaywcjlove/markdown-to-html-cli
 
